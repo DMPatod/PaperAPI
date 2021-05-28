@@ -1,16 +1,12 @@
+using BuildingBlocks.Infrastructures.DomainConnectors;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace KMOG.PaperAPI
 {
@@ -28,6 +24,10 @@ namespace KMOG.PaperAPI
         {
 
             services.AddControllers();
+
+            var referenceAssembly = typeof(Program).Assembly.GetReferencedAssemblies().Select(Assembly.Load).ToArray();
+            services.AddDomainMessageHandler(referenceAssembly);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "KMOG.PaperAPI", Version = "v1" });
